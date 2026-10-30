@@ -24,7 +24,7 @@ colorlinks
 \maketitle
 
 \begin{abstract}
-	Questi esperimenti mirano a valutare l'impatto di diverse formulazioni di un problema in forma Ising sulla qualità delle soluzioni ottenute. A partire da una formula logica, se ne affronta il problema di soddisfacibilità traducendola prima in un circuito digitale e successivamente in un problema di ottimizzazione in forma Ising. Gli esperimenti variano sia la traduzione della formula in circuito digitale, limitando l'insieme delle porte logiche ammesse, sia la traduzione del circuito in un problema Ising, modificando la funzione di energia associata a ciascuna porta.
+	In questi esperimenti trasformiamo una formula logica prima in un circuito digitale, poi in un problema di ottimizzazione infine tentiamo di trovare una soluzione al problema di ottimizzazione con vari metodi. Lo scopo degli esperimenti è valutare se diverse traduzioni in circuito digitale (usando set di porte logiche diverse) o diverse traduzioni in problemi di ottimizzazione (usando diverse forme energetiche a parita di gate) impattano la qualità delle soluzioni del problema di ottimizzazione.
 	
 	Nella Sezione~\ref{sec:setup} vengono presentati la configurazione sperimentale, la formula logica di partenza, i diversi circuiti logici e le funzioni di energia adottate. La Sezione~\ref{sec:results} riporta i risultati ottenuti e un breve commento. Infine, la Sezione~\ref{sec:limits} discute i limiti dello studio e propone alcuni spunti per sviluppi futuri.
 \end{abstract}
@@ -54,16 +54,16 @@ La formula logica di partenza è:
 \begin{equation}
 	Y = C \land \neg(A \lor B).
 \end{equation}
-La formula è volutamente semplice, così da consentire di individuare facilmente un assegnamento che la soddisfi. È stata inoltre scelta in modo che tale assegnamento sia unico. Di conseguenza, una volta tradotta la formula in un problema di ottimizzazione, il paesaggio energetico presenta un unico minimo globale.
+La formula è volutamente semplice, così da consentire di individuare facilmente un assegnamento che la soddisfi. È stata inoltre scelta in modo che tale assegnamento sia unico. Di conseguenza, una volta tradotta la formula in un problema di ottimizzazione, lo spazio delle soluzioni presenta un unico minimo globale.
 
 La formula è stata codificata direttamente in Verilog per mantenere un controllo puntuale sui bit utilizzati e consentirne la trasformazione in diversi circuiti logici mediante \emph{Yosys}. Il listato a destra mostra una possibile codifica della formula in Verilog.
 \subsection{Circuiti digitali}
-La compilazione del programma Verilog in un circuito digitale è stata effettuata con Yosys\footnote{\url{https://yosyshq.net/yosys/}}. Yosys è un software di sintesi hardware articolato e ricco di funzionalità, che esegue diverse fasi di compilazione e semplificazione del circuito. Le opzioni di compilazione possono essere specificate in un file di configurazione, convenzionalmente denominato \texttt{synth.ys}.
+La compilazione del programma Verilog in un circuito digitale è stata effettuata con Yosys\footnote{\url{https://yosyshq.net/yosys/}}. Yosys è un software di sintesi hardware articolato e ricco di funzionalità, che esegue diverse fasi di compilazione e semplificazione del circuito. Le opzioni di compilazione possono essere specificate in un file di configurazione, solitamente denominato \texttt{synth.ys}.
 
 Per realizzare gli esperimenti sono stati utilizzati due componenti del processo di compilazione di Yosys:
 \begin{itemize}
-	\item ABC\footnote{\url{https://github.com/berkeley-abc/abc}}: un insieme di strumenti per l'ottimizzazione logica a grana fine e il mapping su LUT. In questi esperimenti viene utilizzato per stabilire quali porte siano ammesse nel circuito digitale finale. Ad esempio, aggiungendo al file \texttt{synth.ys} il comando \texttt{abc -g AND,XOR}, le sole porte logiche che possono comparire nel circuito finale sono \texttt{AND}, \texttt{XOR} e \texttt{NOT}; quest'ultima è sempre inclusa;
-	\item Techmap: una fase di mapping tecnologico che sostituisce le celle del progetto con implementazioni specificate in un file sorgente Verilog. In questo caso viene utilizzata per definire porte logiche personalizzate, come la porta \texttt{TOFFOLI}. Dopo l'esecuzione di ABC, viene definita una corrispondenza per convertire le porte generate nelle porte desiderate.
+	\item ABC\footnote{\url{https://github.com/berkeley-abc/abc}}: un insieme di strumenti per l'ottimizzazione logica a grana fine e il mapping su LUT. In questi esperimenti ABC viene utilizzato per stabilire quali porte siano ammesse nel circuito digitale finale. Ad esempio, aggiungendo al file \texttt{synth.ys} il comando \texttt{abc -g AND,XOR}, le sole porte logiche che possono comparire nel circuito finale sono \texttt{AND}, \texttt{XOR} e \texttt{NOT} (quest'ultima è sempre inclusa);
+	\item Techmap: una fase di mapping tecnologico che sostituisce le celle del progetto con implementazioni specificate in un file sorgente Verilog. In questo caso Techmap viene utilizzato per definire porte logiche personalizzate, come la porta \texttt{TOFFOLI}. Dopo l'esecuzione di ABC, viene definita una corrispondenza per convertire le porte generate nelle porte desiderate.
 \end{itemize}
 
 Sono stati esaminati tre circuiti con diverse combinazioni di porte logiche, mostrati nella Figura~\ref{fig:circs}.
@@ -114,11 +114,11 @@ La motivazione teorica di questa scelta risiede nel teorema adiabatico, che impo
 }
 
 \subsection{Esecuzione degli esperimenti}
-Per eseguire gli esperimenti sono stati sviluppati la libreria Python \emph{OpenQUOPS}\footnote{\url{URL}}, alcune utility\footnote{\url{URL}} per trasformare una lista di porte logiche in un polinomio e successivamente in un problema in forma Ising, e uno script\footnote{\url{URL}} per automatizzare l'esecuzione delle prove. Gli esperimenti sono stati eseguiti su Fedarchs\footnote{Cluster FEDARCHS basato su OpenStack, a disposizione del gruppo $\alpha$ e dei suoi collaboratori.}.
+Per eseguire gli esperimenti sono stati sviluppati la libreria Python \emph{OpenQUOPS}\footnote{\url{https://github.com/DavideCamino/OpenQUOPS}}; alcune utility\footnote{\url{https://github.com/DavideCamino/Reports/tree/main/Gates_to_Ising/code/utility}} estrarre dai file generati da Yosys una lista di gates, e per trasformare questa lista di porte logiche prima in un polinomio e successivamente in un problema in forma Ising; infine uno script\footnote{\url{https://github.com/DavideCamino/Reports/tree/main/Gates_to_Ising/code}} per automatizzare l'esecuzione delle prove. Gli esperimenti sono stati eseguiti su Fedarchs\footnote{FEDARCHS cluster running on OpenStack available to $\alpha$ group \& friends.}. 
 
-OpenQUOPS (Open Quadratic Unconstrained Optimization Problem Solver) consente di definire e manipolare problemi di ottimizzazione in forma QUBO o Ising. La libreria si interfaccia con la libreria Python \emph{qubovert}\footnote{\url{URL}}, permettendo di importare problemi definiti in qubovert e di esportare quelli definiti in OpenQUOPS. OpenQUOPS integra inoltre diversi risolutori per problemi QUBO o Ising. Al momento sono disponibili la ricerca esaustiva, il simulated annealing, il simulated quantum annealing e il QAOA simulato.
+OpenQUOPS (Open Quadratic Unconstrained Optimization Problem Solver) consente di definire e manipolare problemi di ottimizzazione in forma QUBO o Ising. La libreria si interfaccia con la libreria Python \emph{qubovert}\footnote{\url{https://qubovert.readthedocs.io/en/latest/index.html}}, permettendo di importare problemi definiti in qubovert e di esportare quelli definiti in OpenQUOPS. OpenQUOPS integra inoltre diversi solver per problemi QUBO o Ising. Al momento sono disponibili la ricerca bruteforce, il simulated annealing, il simulated quantum annealing e il QAOA simulato.
 
-I test hanno riguardato tutti i metodi probabilistici disponibili in OpenQUOPS. Per ciascun metodo e ciascun circuito sono state eseguite 30 prove indipendenti, calcolando poi la media e la deviazione standard dei risultati raccolti. Ogni prova prevedeva $2^{16}$ campioni. Per QAOA è stato costruito un circuito a 2 livelli ed è stata adottata una strategia di riavvio dell'ottimizzazione dei parametri: ogni prova comprende $20$ ottimizzazioni indipendenti, tra le quali viene selezionata quella che consente di ottenere l'energia più bassa.
+I test hanno riguardato tutti i metodi probabilistici disponibili in OpenQUOPS. Per ciascun metodo e ciascun circuito sono state eseguite 30 prove indipendenti, calcolando poi la media e la deviazione standard dei risultati raccolti. Ogni prova prevedeva $2^{16}$ samples. Per QAOA è stato costruito un circuito a 2 livelli ed è stata adottata una policy di restarting dell'ottimizzazione dei parametri: ogni run prevede $20$ ottimizzazioni indipendenti, tra le quali viene selezionata quella che consente di ottenere l'energia più bassa.
 
 \section{Risultati}\label{sec:results}
 I risultati sono riportati nella Figura~\ref{fig:results}, organizzata come una tabella: le colonne corrispondono ai metodi di risoluzione e le righe ai diversi circuiti. In ciascun grafico della Figura~\ref{fig:results}, il secondo punto rappresenta il numero di osservazioni dell'assegnamento corretto ed è evidenziato in grassetto rispetto agli altri.
@@ -137,14 +137,9 @@ Lo studio presenta le seguenti limitazioni, che suggeriscono possibili direzioni
 	\item Manca una definizione della porta \texttt{AND} con due variabili ancillari;
 	\item Anche la porta \texttt{OR} può essere formulata mediante un polinomio con una o due variabili ancillari, ma queste formulazioni non sono state considerate;
 	\item Non è stata condotta un'analisi sistematica di tutte le porte per individuare e selezionare quelle che forniscono i risultati migliori;
-	\item Quando l'insieme delle porte è generato da Yosys utilizzando solo ABC, tale insieme è ottimizzato. Quando invece si ricorre a Techmap, la conversione in porte \texttt{TOFFOLI} avviene mediante una sostituzione uno a uno, senza considerare possibili raggruppamenti. Ad esempio, una porta \texttt{AND} seguita da una porta \texttt{XOR} potrebbe essere sostituita da un'unica porta \texttt{TOFFOLI} che ne realizzi la funzione complessiva; Techmap genera invece due porte, ciascuna delle quali implementa una singola porta del circuito originale.
+	\item Quando l'insieme delle porte è generato da Yosys utilizzando solo ABC, il circuito è ottimizzato per usare meno porte possibili. Quando invece si ricorre a Techmap, la conversione in porte \texttt{TOFFOLI} avviene mediante una sostituzione uno a uno, senza considerare possibili raggruppamenti. Ad esempio, una porta \texttt{AND} seguita da una porta \texttt{XOR} potrebbe essere sostituita da un'unica porta \texttt{TOFFOLI} che ne realizzi la funzione complessiva; Techmap genera invece due porte, ciascuna delle quali implementa una singola porta del circuito originale.
 \end{itemize}
 
 \include{plots}
 
 \end{document}
-
-% Riepilogo delle correzioni al codice LaTeX:
-% - Corretto $2^16$ in $2^{16}$: le parentesi graffe includono entrambe
-%   le cifre nell'esponente, anziché la sola cifra 1.
-% - Non sono state apportate altre modifiche al codice LaTeX o ai polinomi.
