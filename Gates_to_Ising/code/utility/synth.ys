@@ -1,0 +1,27 @@
+# Load the Toffoli library cell
+read_verilog -lib toffoli.v
+
+# Load the circuit
+read_verilog sat.v
+
+# Synthesize without automatic ABC
+synth -top sat -flatten -noabc
+
+# Map to intermediate gates
+abc -g AND,XOR
+
+# Replace gates with Toffoli cells
+techmap -map map.v
+
+# Clean and verify
+clean -purge
+check
+stat
+
+# Visualize
+show -format svg -prefix circ
+
+# Export netlist
+write_json mapped.json
+#write_verilog -noattr -noexpr mapped_sat.v
+#write_edif -top sat sat.edif
