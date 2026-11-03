@@ -1,7 +1,7 @@
 import argparse
 import json
 from concurrent.futures import ProcessPoolExecutor
-from itertools import product, repeat
+from itertools import repeat
 from typing import Any
 
 import pandas as pd
@@ -57,10 +57,8 @@ def run_experiments(
 
 
 def summarize_results(results: list[pd.Series], pins: dict[str, int], variables: list[str]) -> pd.DataFrame:
-    # Include zero counts for every assignment consistent with the pins.
-    domains = [[pins[v]] if v in pins else [-1, 1] for v in variables]
-    index = pd.MultiIndex.from_tuples(product(*domains), names=variables)
-    counts = pd.concat([r.reindex(index, fill_value=0) for r in results], axis=1)
+    # Include only observed assignments; missing experiments contribute zero.
+    counts = pd.concat(results, axis=1).fillna(0)
     return pd.DataFrame({'mean': counts.mean(axis=1), 'std': counts.std(axis=1)})
 
 
@@ -138,3 +136,4 @@ def main(argv: list[str] | None = None) -> None:
 
 if __name__ == '__main__':
     main()
+
