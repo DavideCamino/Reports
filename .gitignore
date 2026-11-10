@@ -1,0 +1,28 @@
+# LaTeX auxiliary files
+*.aux
+*.fdb_latexmk
+*.fls
+*.gz
+*.idx
+*.ind
+*.lof
+*.lot
+*.out
+*.toc
+*.vrb
+*.log
+*.nav
+*.snv
+*.xdv
+*.pdf
+*.bbl
+*.blg
+*.blf
+*.mpc
+*.mpix
+*.balm
+*.synctex.gz
+
+# TexStudio specific
+.texstudio
+texstudio.ini
