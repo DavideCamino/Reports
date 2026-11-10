@@ -1,0 +1,31 @@
+\documentclass[]{article}
+
+\usepackage{dirtytalk}
+
+%opening
+\title{Fattorizzazione come moltiplicazione \say{reversed}}
+\author{Davide Camino}
+
+\begin{document}
+	
+	\maketitle
+	
+	\begin{abstract}
+		Alcuni esperimenti su come fare la fattorizzazione di un numero scrivendo un programma che fa moltiplicazioni tra ineri. L'idea è di implementare in Verilog un programma che moltiplica due valori A e B ottenendo come risultato C. Si trasforma questo programma in un circuito digitale e successivamente in un problema QUBO. Una volta ottenuto il problema QUBO si sfrutta la reversibilità offerta dal modello per fissare il risultato C della moltiplicazione e ottenere i valori A e B
+	\end{abstract}
+	
+	\section{Programma Verilog}
+	Il programma verilog che implementa la moltiplicazione tra due valori può essere specificato a differenti livelli di asptrazione. Possiamo costruire un programma che operi bitwise e spechifichi esattamente le operazioni applicate a ciascun bit dei moltiplicando al fine di ottenere il risultato oppure possiamo sfruttare gli operatori di \say{alto livello} offerti da Verilog e assegnare direttamente a C il prodotto di A e B. In questo caso come primo esperimento è stata seguita quest'ultima strada essendo solo un'esplorazione preliminare. Il codice \say{template} per questo circuito è mostrato nel Listato~\ref{lst:mult_verilog}, la moltiplicazione è definita alla linea XXX.
+	
+	Altro dettaglio importante è il numero di bit che assegnamo ad ogni variabile (linee da XXX a XXX), utilizzando Verilog abbiamo un controllo puntuale del numero di bit utilizzati da ogni variabile, qeusto è molto utile per tenere sotto controllo la dimensione del problema QUBO finale e studiare come cambia al varirare delle dimensioni dei dati in ingresso e uscita. Per dimensionare l'output del circuito si è tenuto in considerazione che:
+	\[
+		C = A \cdot B,
+	\]
+	di conseguenza:
+	\[
+		\log_2C = \log_2(A \cdot B) = \log_2 A + \log_2 B.
+	\]
+	
+	Questo rende molto semplice definire la dimensione di $C$ conoscendo le dimensioni di $A$ e $B$, anche se presenta dei limiti che discuteremo in seguito.
+	
+\end{document}
