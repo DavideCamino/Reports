@@ -1,6 +1,11 @@
 \documentclass[]{article}
 
 \usepackage{dirtytalk}
+\usepackage{wrapfig}
+\usepackage{listing}
+\usepackage{minted}
+\usepackage{lipsum}
+\usepackage{caption} % Required for \captionof
 
 %opening
 \title{Fattorizzazione come moltiplicazione \say{reversed}}
@@ -11,13 +16,38 @@
 	\maketitle
 	
 	\begin{abstract}
-		Alcuni esperimenti su come fare la fattorizzazione di un numero scrivendo un programma che fa moltiplicazioni tra ineri. L'idea è di implementare in Verilog un programma che moltiplica due valori A e B ottenendo come risultato C. Si trasforma questo programma in un circuito digitale e successivamente in un problema QUBO. Una volta ottenuto il problema QUBO si sfrutta la reversibilità offerta dal modello per fissare il risultato C della moltiplicazione e ottenere i valori A e B
-	\end{abstract}
+		Alcuni esperimenti su come fare la fattorizzazione di un numero scrivendo un programma che fa moltiplicazioni tra ineri. L'idea è di implementare in Verilog un programma che moltiplica due valori $A$ e $B$ ottenendo come risultato $C$. Si trasforma questo programma in un circuito digitale e successivamente in un problema QUBO. Una volta ottenuto il problema QUBO si sfrutta la reversibilità offerta dal modello per fissare il risultato $C$ della moltiplicazione e ottenere i valori $A$ e $B$.
+		
+		Nella sezione \ref{} si introduce il programma Verilog discutendone le caratteristiche, in \ref{} si presenta l'esperimento di fattorizzazione con i relativi risultati, in \ref{} si studia la dimensione del problema QUBO in funzione del numero da fattorizzare, infine in \ref{} si discutono i limiti dello studio e si propongono spunti futuri.
+	\end{abstract}			
 	
 	\section{Programma Verilog}
-	Il programma verilog che implementa la moltiplicazione tra due valori può essere specificato a differenti livelli di asptrazione. Possiamo costruire un programma che operi bitwise e spechifichi esattamente le operazioni applicate a ciascun bit dei moltiplicando al fine di ottenere il risultato oppure possiamo sfruttare gli operatori di \say{alto livello} offerti da Verilog e assegnare direttamente a C il prodotto di A e B. In questo caso come primo esperimento è stata seguita quest'ultima strada essendo solo un'esplorazione preliminare. Il codice \say{template} per questo circuito è mostrato nel Listato~\ref{lst:mult_verilog}, la moltiplicazione è definita alla linea XXX.
+	\begin{wrapfigure}{r}{.55\linewidth}
+		\rule{\linewidth}{0.4pt}
+		
+		\hfill
+		\begin{minipage}{.9\linewidth}
+			\vspace{.2cm}
+			\begin{minted}[linenos=true]{verilog}
+module Multiplier (
+	input  wire [2:0] A,
+	input  wire [2:0] B,
+	output wire [5:0] Mul
+	);
 	
-	Altro dettaglio importante è il numero di bit che assegnamo ad ogni variabile (linee da XXX a XXX), utilizzando Verilog abbiamo un controllo puntuale del numero di bit utilizzati da ogni variabile, qeusto è molto utile per tenere sotto controllo la dimensione del problema QUBO finale e studiare come cambia al varirare delle dimensioni dei dati in ingresso e uscita. Per dimensionare l'output del circuito si è tenuto in considerazione che:
+	assign Mul = A * B;
+
+endmodule
+			\end{minted}
+			\vspace{-.1cm}
+		\end{minipage}
+		\rule{\linewidth}{0.4pt}
+	\captionof{listing}{Multiplier in Verilog} % Use \captionof instead of \caption
+	\label{lst:mult_verilog}
+\end{wrapfigure}
+	Il programma Verilog che implementa la moltiplicazione tra due valori può essere specificato a differenti livelli di asptrazione. Possiamo costruire un programma che operi bitwise e spechifichi esattamente le operazioni applicate a ciascun bit dei moltiplicando al fine di ottenere il prodotto oppure possiamo sfruttare gli operatori di \say{alto livello} offerti da Verilog e assegnare direttamente a C il prodotto di A e B. In questo caso come primo esperimento è stata seguita quest'ultima strada essendo solo un'esplorazione preliminare. Il codice \say{template} per questo circuito è mostrato nel Listato~\ref{lst:mult_verilog}, la moltiplicazione è definita alla linea 7.
+	
+	Altro dettaglio importante è il numero di bit che assegnamo ad ogni variabile (linee da 2 a 4), utilizzando Verilog abbiamo un controllo puntuale del numero di bit utilizzati da ogni variabile, qeusto è molto utile per tenere sotto controllo la dimensione del problema QUBO finale e studiare come cambia al varirare delle dimensioni dei dati in ingresso e uscita. Per dimensionare l'output del circuito si è tenuto in considerazione che:
 	\[
 		C = A \cdot B,
 	\]
@@ -27,5 +57,15 @@
 	\]
 	
 	Questo rende molto semplice definire la dimensione di $C$ conoscendo le dimensioni di $A$ e $B$, anche se presenta dei limiti che discuteremo in seguito.
+	
+	\section{Esperimento}
+	
+	\subsection{Set Sperimentale}
+	\subsection{Risultati}
+	
+	\section{Analisi della dimensione del QUBO}
+	\subsection{E Shor?}
+	
+	\section{Limitazioni e spunti}
 	
 \end{document}

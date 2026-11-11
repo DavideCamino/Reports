@@ -14,7 +14,6 @@
 *.nav
 *.snv
 *.xdv
-*.pdf
 *.bbl
 *.blg
 *.blf
@@ -22,6 +21,9 @@
 *.mpix
 *.balm
 *.synctex.gz
+
+# Minted
+*_minted
 
 # TexStudio specific
 .texstudio
