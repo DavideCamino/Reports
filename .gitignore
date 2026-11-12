@@ -21,6 +21,8 @@
 *.mpix
 *.balm
 *.synctex.gz
+*.run.xml
+*.bcf
 
 # Minted
 *_minted
