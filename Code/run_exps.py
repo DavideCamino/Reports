@@ -106,7 +106,7 @@ def plot_results(summary: pd.DataFrame) -> None:
 
 
 def create_solver(name: str) -> Any:
-    if name == 'qaoa':
+    if name == 'qaoa' or name == 'qaoa_matrix':
         from oquops.solvers.variational.qaoa_qiskit_aer import Qiskit_Aer_QAOA
         return Qiskit_Aer_QAOA()
     if name == 'brute-force':
@@ -121,7 +121,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument('--gates', default='extracted.json')
     parser.add_argument('--penalties', default='gate_penalties.json')
     parser.add_argument('--pins', type=json.loads, default={'Y': 1})
-    parser.add_argument('--solver', default='qaoa', help='qaoa, annealing, path-integral, or brute-force')
+    parser.add_argument('--solver', default='qaoa', help='qaoa, qaoa_matrix, annealing, path-integral, or brute-force')
     for name, default in [('levels', 2), ('samples', 2048), ('num_restart', 20), ('n_experiments', 10), ('max_workers', 4)]:
         parser.add_argument(f'--{name}', type=int, default=default)
     parser.add_argument('--output')
@@ -132,6 +132,9 @@ def build_option(args: argparse.Namespace) -> dict:
     options = {}
     if args.solver == 'qaoa':
         options = dict(level=args.levels, sample_shots=args.samples, num_restart=args.num_restart)
+    if args.solver == 'qaoa_matrix':
+            from oquops.solvers.variational.qaoa_qiskit_aer import AerMethod
+            options = dict(level=args.levels, sample_shots=args.samples, num_restart=args.num_restart, method=AerMethod.MATRIX_PRODUCT_STATE)
     elif args.solver in ('annealing', 'path-integral'):
         options = dict(num_samples=args.samples)
         if args.solver == 'path-integral':
