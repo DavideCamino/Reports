@@ -1,4 +1,4 @@
-module sat (
+module circuit (
     input  wire A,
     input  wire B,
     input  wire C,
